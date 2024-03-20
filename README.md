@@ -7,19 +7,19 @@ parameters in your rails app.
 
 Add the gem to your `Gemfile` with the following line, and then `bundle install`
 
-```
+```ruby
 gem 'lti_provider_engine', :require => 'lti_provider'
 ```
 
 Then, mount the engine to your app by adding this line to your `routes.rb` file
 
-```
+```ruby
 mount LtiProvider::Engine => "/"
 ```
 
 Next, include the engine in your `ApplicationController`
 
-```
+```ruby
 class ApplicationController < ActionController::Base
   include LtiProvider::LtiApplication
   
@@ -32,7 +32,7 @@ like this:
 
 **lti.yml**
 
-```
+```yml
 default: &default
   key: your_key
   secret: your_secret
@@ -53,7 +53,7 @@ the tool consumer side.
 
 **lti_xml.yml**
 
-```
+```yml
 default: &default
   tool_title: 'Dummy App'
   tool_description: 'A very handy dummy application for testing LtiProvider engine integration.'
@@ -80,7 +80,7 @@ These values are used in the `/configure.xml` endpoint.
 
 Finally, run migrations:
 
-```
+```bash
 bundle install
 bundle exec rake railties:install:migrations
 bundle exec rake db:migrate
@@ -116,6 +116,7 @@ exposes the following methods to your controllers:
   * `current_account_id`
   * `course_launch?`
   * `account_launch?`
+  * `user_roles`
 
 ## Configuring the Tool Consumer
 

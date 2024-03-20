@@ -1,7 +1,7 @@
 module LtiProvider
   module LtiXmlConfig
     def self.load_config
-      YAML::load(File.open(config_file))[Rails.env]
+      YAML::safe_load(File.open(config_file), aliases: true)[Rails.env]
     end
 
     def self.config_file
@@ -10,7 +10,7 @@ module LtiProvider
 
     def self.setup!
       config = LtiProvider::XmlConfig
-      if File.exists?(config_file)
+      if File.exist?(config_file)
         Rails.logger.info "Initializing LTI XML config using configuration in #{config_file}"
         load_config.each do |k,v|
           config.send("#{k}=", v)

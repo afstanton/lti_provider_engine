@@ -6,7 +6,7 @@ module LtiProvider
     end
 
     included do
-      before_filter :require_lti_launch
+      before_action :require_lti_launch
     end
 
     protected
@@ -18,7 +18,7 @@ module LtiProvider
     end
 
     def prompt_for_launch
-      render text: 'Please launch this tool from Canvas and then try again.'
+      render plain: 'Please launch this tool from Canvas and then try again.'
     end
 
     def canvas_url
@@ -54,7 +54,7 @@ module LtiProvider
     end
 
     def not_acceptable
-      render text: "Unable to process request", status: 406
+      render plain: "Unable to process request", status: 406
     end
   end
 end

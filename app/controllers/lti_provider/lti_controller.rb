@@ -1,8 +1,8 @@
-require 'oauth/request_proxy/rack_request'
+require 'oauth/request_proxy/action_controller_request'
 
 module LtiProvider
-  class LtiController < LtiProvider::ApplicationController
-    skip_before_filter :require_lti_launch
+  class LtiController < LtiProvider::LtiApplicationController
+    skip_before_action :require_lti_launch
 
     def launch
       provider = IMS::LTI::ToolProvider.new(params['oauth_consumer_key'], LtiProvider::Config.secret, params)
@@ -55,7 +55,7 @@ module LtiProvider
 
     protected
       def show_error(message)
-        render text: message
+        render plain: message
       end
   end
 end

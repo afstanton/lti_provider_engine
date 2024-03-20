@@ -1,4 +1,4 @@
-class CreateLtiProviderLaunches < ActiveRecord::Migration
+class CreateLtiProviderLaunches < ActiveRecord::Migration[4.2]
   def change
     create_table "lti_provider_launches", :force => true do |t|
       t.string   "canvas_url"

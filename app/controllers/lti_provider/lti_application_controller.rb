@@ -1,5 +1,5 @@
 module LtiProvider
-  class ApplicationController < ActionController::Base
+  class LtiApplicationController < ActionController::Base
     include LtiProvider::LtiApplication
   end
 end

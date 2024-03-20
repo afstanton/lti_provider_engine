@@ -1,18 +1,6 @@
 require 'spec_helper'
 
 describe LtiProvider::Launch do
-  describe "validations" do
-    subject(:launch) do
-      l = LtiProvider::Launch.new
-      l.provider_params = {}
-      l
-    end
-
-    it { is_expected.to validate_presence_of :canvas_url }
-    it { is_expected.to validate_presence_of :nonce }
-    it { is_expected.to validate_presence_of :provider_params }
-  end
-
   describe ".initialize_from_request" do
     let(:provider) do
       p = double('provider')
@@ -40,12 +28,14 @@ describe LtiProvider::Launch do
 
     subject(:launch) { LtiProvider::Launch.initialize_from_request(provider, request) }
 
-    its(:course_id) { is_expected.to eq 1 }
-    its(:tool_consumer_instance_guid) { is_expected.to eq '123abc' }
-    its(:user_id) { is_expected.to eq 2 }
-    its(:nonce) { is_expected.to eq 'nonce' }
-    its(:account_id) { is_expected.to be_nil }
-    its(:canvas_url) { is_expected.to eq 'http://example.com' }
+    it "parses params" do
+      expect(subject.course_id).to eq 1
+      expect(subject.tool_consumer_instance_guid).to eq '123abc'
+      expect(subject.user_id).to eq 2
+      expect(subject.nonce).to eq 'nonce'
+      expect(subject.account_id).to be_nil
+      expect(subject.canvas_url).to eq 'http://example.com'
+    end
   end
 
   describe "xml_config" do

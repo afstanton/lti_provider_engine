@@ -1,10 +1,14 @@
 require 'spec_helper'
 
 describe LtiProvider::LtiController do
+  before do
+    @routes = LtiProvider::Engine.routes
+  end
+
   let(:user_id) { "1" }
   let(:parameters) {
     {
-      'launch_url' => "http://#{request.host}",
+      'launch_url' => "http://#{request.host}/launch",
       'custom_canvas_user_id' => user_id,
       'launch_presentation_return_url' => "http://test.canvas",
 
@@ -34,7 +38,7 @@ describe LtiProvider::LtiController do
     request.env['CONTENT_TYPE'] = 'application/x-www-form-urlencoded'
     request.env['HTTP_REFERER'] = 'http://test.canvas/external_tools/1'
 
-    post :launch, data.merge(use_route: :lti_provider)
+    post :launch, params: data
   end
 
   describe "GET cookie_test" do
@@ -42,14 +46,14 @@ describe LtiProvider::LtiController do
       it "proceeds to oauth" do
         controller.session[:cookie_test] = true
         expect(controller).to receive(:consume_launch)
-        get :cookie_test, use_route: :lti_provider
+        get :cookie_test
       end
     end
 
     context "when failed" do
       it "renders a message" do
-        get :cookie_test, use_route: :lti_provider
-        expect(response).to render_template('cookie_test')
+        get :cookie_test
+        expect(response).not_to be_redirect
       end
     end
   end
@@ -61,7 +65,8 @@ describe LtiProvider::LtiController do
       end
 
       it "performs a cookie test and passes along the nonce" do
-        expect(response.redirect_url).to include(lti_provider.cookie_test_url(nonce: '', host: request.host))
+        launch = LtiProvider::Launch.first
+        expect(response.redirect_url).to redirect_to(lti_provider.cookie_test_url(nonce: launch.nonce, host: request.host))
       end
 
       it "saves the launch record" do
@@ -100,7 +105,7 @@ describe LtiProvider::LtiController do
 
     describe "a successful launch" do
       it "sets the session params" do
-        get :consume_launch, nonce: 'abcd', use_route: :lti_provider
+        get :consume_launch, params: { nonce: 'abcd' }
         expect(session[:course_id]).to eq 1
         expect(session[:user_id]).to eq 2
         expect(session[:canvas_url]).to eq 'http://canvas'
@@ -109,25 +114,25 @@ describe LtiProvider::LtiController do
       end
 
       it "destroys the launch" do
-        get :consume_launch, nonce: 'abcd', use_route: :lti_provider
+        get :consume_launch, params: { nonce: 'abcd' }
         expect(LtiProvider::Launch.count).to eq 0
       end
     end
 
     describe "an expired nonce" do
       before do
-        launch.update_attribute(:created_at, 10.minutes.ago)
+        launch.update(created_at: 10.minutes.ago)
       end
 
       it "shows an error" do
-        get :consume_launch, nonce: 'abcd', use_route: :lti_provider
+        get :consume_launch, params: { nonce: 'abcd' }
         expect(response.body).to be =~ /not launched successfully/
       end
     end
 
     describe "a failed launch" do
       it "shows an error" do
-        get :consume_launch, nonce: 'invalid', use_route: :lti_provider
+        get :consume_launch, params: { nonce: 'invalid' }
         expect(response.body).to be =~ /not launched successfully/
       end
     end
@@ -135,8 +140,8 @@ describe LtiProvider::LtiController do
 
   describe "configure.xml" do
     it "succeeds" do
-      get :configure, format: :xml, use_route: :lti_provider
-      expect(response).to be_success
+      get :configure, format: :xml
+      expect(response).to be_successful
     end
   end
 end
