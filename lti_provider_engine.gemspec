@@ -21,7 +21,7 @@ SUM
 
   s.required_ruby_version = '>= 2.6.0'
 
-  s.add_dependency "rails", ">= 4.2", "< 7.0"
+  s.add_dependency "rails", ">= 5.0", "< 7.0"
   s.add_dependency 'ims-lti', '~> 1.2'
 
   s.add_development_dependency "sqlite3"
