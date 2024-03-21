@@ -21,7 +21,7 @@ SUM
 
   s.required_ruby_version = '>= 2.6.0'
 
-  s.add_dependency "rails", ">= 5.0", "< 7.0"
+  s.add_dependency "rails", ">= 5.0", "< 8.0"
   s.add_dependency 'ims-lti', '~> 1.2'
 
   s.add_development_dependency "sqlite3"
@@ -33,5 +33,4 @@ SUM
   s.add_development_dependency "byebug"
   s.add_development_dependency "guard-rspec"
   s.add_development_dependency "rb-fsevent"
-  s.add_development_dependency "sprockets", "~>3.0"
 end
