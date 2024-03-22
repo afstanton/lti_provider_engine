@@ -1,5 +1,3 @@
-require 'oauth/request_proxy/action_controller_request'
-
 module LtiProvider
   class LtiController < LtiProvider::LtiApplicationController
     skip_before_action :require_lti_launch
